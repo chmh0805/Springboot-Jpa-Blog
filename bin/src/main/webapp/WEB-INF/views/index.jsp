@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>블로그</title>
+<title>Insert title here</title>
 </head>
 <body>
 	<h1>index.jsp 파일입니다람쥐</h1>
