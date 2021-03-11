@@ -1,20 +1,24 @@
 package com.hyuk.blog.web;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.hyuk.blog.config.auth.PrincipalDetails;
 
 @Controller
 public class UserController {
 	
-	@GetMapping("/user")
-	public @ResponseBody String hello() { // @Controller + @ResponseBody = @RestController
-		return "User";
-	}
+	// 로그인, 로그아웃, 회원가입, 회원정보 변경 => AuthController
+	// 
 	
-	@GetMapping({"", "/"})
-	public String home() {
-		return "index"; // WEB-INF/views/home.jsp 파일 찾음
+	@GetMapping("/user")
+	public @ResponseBody String findAll(@AuthenticationPrincipal PrincipalDetails principalDetails) { // @Controller + @ResponseBody = @RestController
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+//		System.out.println(principalDetails);
+		System.out.println(principalDetails.getUsername());
+		return "User";
 	}
 }
