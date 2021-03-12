@@ -1,7 +1,5 @@
 package com.hyuk.blog.web;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,9 +25,12 @@ public class PostController {
 	
 	@GetMapping("/")
 	public String findAll(Model model, 
-			@PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 3) Pageable pageable) {
+			@PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 3) Pageable pageable,
+			@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		Page<Post> posts = postService.전체찾기(pageable);
 		model.addAttribute("posts", posts);
+		System.out.println("로그인된 유저 : ");
+		System.out.println(principalDetails.getAttributes());
 		return "post/list";
 	}
 

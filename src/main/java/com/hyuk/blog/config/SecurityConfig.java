@@ -1,23 +1,22 @@
 package com.hyuk.blog.config;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import com.hyuk.blog.config.oauth.OAuth2DetailsService;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration // IoC 등록
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	private final OAuth2DetailsService oAuth2DetailsService;
 	
 	// IoC 등록만 하면 AuthenticationManager가 BCrypt로 검증해준다.
 	@Bean
@@ -43,6 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //					response.sendRedirect("/");
 //				}
 //			});
-			.defaultSuccessUrl("/"); // 목적지 url이 없이 로그인에 성공했을 때
+			.defaultSuccessUrl("/") // 목적지 url이 없이 로그인에 성공했을 때
+			.and()
+			.oauth2Login()
+			.userInfoEndpoint()
+			.userService(oAuth2DetailsService);
 	}
 }
