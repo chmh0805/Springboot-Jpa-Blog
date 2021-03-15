@@ -1,5 +1,6 @@
 package com.hyuk.blog.config.oauth;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,6 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.hyuk.blog.config.auth.PrincipalDetails;
+import com.hyuk.blog.domain.user.RoleType;
 import com.hyuk.blog.domain.user.User;
 import com.hyuk.blog.domain.user.UserRepository;
 
@@ -26,7 +28,9 @@ public class OAuth2DetailsService extends DefaultOAuth2UserService {
 		
 		// 1. AccessToken으로 회원정보를 받았다는 의미 (AccessToken은 userRequest가 들고 있음)
 		OAuth2User oAuth2User = super.loadUser(userRequest);
+		System.out.println("===================================================");
 		System.out.println(oAuth2User.getAttributes());
+		System.out.println("===================================================");
 		
 		return processOAuth2User(userRequest, oAuth2User);
 	}
@@ -42,11 +46,22 @@ public class OAuth2DetailsService extends DefaultOAuth2UserService {
 		OAuth2UserInfo oAuth2UserInfo = null;
 		
 		// 1. 통합 클래스를 생성
-		if (clientName.equals("Google")) {
-			oAuth2UserInfo = new GoogleInfo(oAuth2User.getAttributes());			
-		} else if (clientName.equals("Facebook")) {
-			oAuth2UserInfo = new FacebookInfo(oAuth2User.getAttributes());
-		}
+		switch (clientName) {
+			case "Google":
+				oAuth2UserInfo = new GoogleInfo(oAuth2User.getAttributes());
+				break;
+			case "Facebook":
+				oAuth2UserInfo = new FacebookInfo(oAuth2User.getAttributes());
+				break;
+			case "Naver":
+				oAuth2UserInfo = new NaverInfo((Map)(oAuth2User.getAttributes().get("response")));
+				break;
+			case "Kakao":
+				oAuth2UserInfo = new KakaoInfo((Map)oAuth2User.getAttributes());
+				break;
+			default:
+				break;
+			}
 		
 		// 2. 최초 로그인 : 회원가입+로그인 / 아니면 : 로그인
 		User userEntity = userRepository.findByUsername(oAuth2UserInfo.getUsername());
@@ -58,6 +73,7 @@ public class OAuth2DetailsService extends DefaultOAuth2UserService {
 					.username(oAuth2UserInfo.getUsername())
 					.password(encPassword)
 					.email(oAuth2UserInfo.email())
+					.role(RoleType.USER)
 					.build();
 			userEntity = userRepository.save(user);
 			return new PrincipalDetails(userEntity, oAuth2User.getAttributes());

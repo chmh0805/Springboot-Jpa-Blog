@@ -1,4 +1,4 @@
-package com.hyuk.blog.domain.post.dto;
+package com.hyuk.blog.web.post.dto;
 
 import com.hyuk.blog.domain.post.Post;
 

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.hyuk.blog.config.auth.PrincipalDetails;
 import com.hyuk.blog.domain.post.Post;
-import com.hyuk.blog.domain.post.dto.PostSaveReqDto;
 import com.hyuk.blog.service.PostService;
+import com.hyuk.blog.web.post.dto.PostSaveReqDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,8 +29,6 @@ public class PostController {
 			@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		Page<Post> posts = postService.전체찾기(pageable);
 		model.addAttribute("posts", posts);
-		System.out.println("로그인된 유저 : ");
-		System.out.println(principalDetails.getAttributes());
 		return "post/list";
 	}
 
