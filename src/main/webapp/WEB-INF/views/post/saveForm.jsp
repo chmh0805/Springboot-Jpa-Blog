@@ -8,11 +8,19 @@
 			<input type="text" class="form-control" placeholder="Enter Title" name="title" />
 		</div>
 		<div class="form-group">
-			<textarea rows="" cols="5" class="form-control" name="content" placeholder="Enter Content" ></textarea>
+			<textarea id="content" rows="" cols="5" class="form-control" name="content" placeholder="Enter Content" ></textarea>
 		</div>
 		<div class="form-group form-check"></div>
 		<button type="submit" class="btn btn-primary">글쓰기 완료</button>
 	</form>
 </div>
+
+<script>
+	$('#content').summernote({
+	  placeholder: 'Enter Content',
+	  tabsize: 2,
+	  height: 300
+	});
+</script>
 
 <%@include file="../layout/footer.jsp"%>

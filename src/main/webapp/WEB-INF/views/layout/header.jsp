@@ -15,6 +15,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- include summernote css/js -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <title>블로그</title>
 </head>
 <body>
@@ -38,5 +41,22 @@
 				</c:choose>
 			</ul>
 		</div>
+		<form class="form-inline">
+		    <input class="form-control mr-sm-2" type="text" placeholder="Search" id="search-keyword">
+		    <button class="btn btn-primary" id="btn-search">Search</button>
+		</form>
 	</nav>
 	<br>
+	
+<script>
+	$("#btn-search").on("click", (e) => {
+		e.preventDefault();
+		let keyword = $("#search-keyword").val();
+
+		if (keyword === "" || keyword === null) {
+			alert("검색어를 입력해주세요.");
+			return;
+		}
+		location.href = "/?keyword=" + keyword;
+	});
+</script>
