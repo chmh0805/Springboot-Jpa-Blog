@@ -1,5 +1,10 @@
 package com.hyuk.blog.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -7,6 +12,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,10 +59,22 @@ public class PostController {
 	}
 
 	@PostMapping("/post")
-	public String save(PostSaveReqDto postSaveReqDto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+	public String save(@Valid PostSaveReqDto postSaveReqDto, @AuthenticationPrincipal PrincipalDetails principalDetails, 
+							BindingResult bindingResult) {
 		Post post = postSaveReqDto.toEntity();
 		post.setUser(principalDetails.getUser());
 		Post postEntity = postService.글쓰기(post);
+		
+		if (bindingResult.hasErrors()) {
+			Map<String, String> errors = new HashMap<>();
+			
+			for (FieldError error : bindingResult.getFieldErrors()) {
+				errors.put(error.getField(), error.getDefaultMessage());
+			}
+			
+			return "post/saveForm";
+		}
+		
 		if (postEntity == null) {
 			return "post/saveForm";
 		} else {

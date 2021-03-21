@@ -63,7 +63,7 @@
 
 <script>
 	$("#btn-delete").on("click", (e) => {
-		let id = $("#postId").value;
+		let id = $("#postId").val();
 
 		$.ajax({
 			type: "DELETE",

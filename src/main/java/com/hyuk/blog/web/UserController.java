@@ -42,12 +42,13 @@ public class UserController {
 	public @ResponseBody CommonRespDto<?> update(@PathVariable Integer id, @RequestBody UserUpdateReqDto userUpdateReqDto,
 			@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		System.out.println(userUpdateReqDto);
-		User userEntity = userService.회원정보수정(id, userUpdateReqDto);
 		
-		// 세션값 변경하기
-		principalDetails.setUser(userEntity);
-		userEntity.setPassword(null);
-		
+		if (principalDetails.getUser().getId() == id) {
+			User userEntity = userService.회원정보수정(id, userUpdateReqDto);			
+			// 세션값 변경하기
+			principalDetails.setUser(userEntity);
+			userEntity.setPassword(null);
+		}
 //		Authentication authentication =
 //				new UsernamePasswordAuthenticationToken(userEntity.getUsername(), userEntity.getPassword());
 //		SecurityContextHolder.getContext().setAuthentication(authentication);
