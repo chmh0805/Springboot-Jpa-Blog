@@ -24,7 +24,15 @@
 		};
 		
 		let id = $("#id").val();
-		console.log(data);
+
+		if (data.password === '') {
+			alert('비밀번호를 입력하세요.');
+			return;
+		}
+		if (data.email === '') {
+			alert('이메일을 입력하세요.');
+			return;
+		}
 		
 		$.ajax({
 			method: "PUT",
@@ -38,7 +46,7 @@
 				alert('수정 성공');
 				location.href = "/";
 			} else {
-				alert('수정 실패');
+				alert(res.data);
 			}
 		});
 	});

@@ -1,8 +1,12 @@
 package com.hyuk.blog.web;
 
+import javax.validation.Valid;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -39,9 +43,16 @@ public class UserController {
 	}
 
 	@PutMapping("/user/{id}")
-	public @ResponseBody CommonRespDto<?> update(@PathVariable Integer id, @RequestBody UserUpdateReqDto userUpdateReqDto,
-			@AuthenticationPrincipal PrincipalDetails principalDetails) {
-		System.out.println(userUpdateReqDto);
+	public @ResponseBody CommonRespDto<?> update(@PathVariable Integer id, @Valid @RequestBody UserUpdateReqDto userUpdateReqDto,
+			@AuthenticationPrincipal PrincipalDetails principalDetails, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			String message = "";
+			for (FieldError error : bindingResult.getFieldErrors()) {
+				System.out.println(error.getField() + " : " + error.getDefaultMessage());
+				message = message + error.getDefaultMessage() + "\n";
+			}
+			return new CommonRespDto<>(-1, message);
+		}
 		
 		if (principalDetails.getUser().getId() == id) {
 			User userEntity = userService.회원정보수정(id, userUpdateReqDto);			

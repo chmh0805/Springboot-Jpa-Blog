@@ -1,8 +1,5 @@
 package com.hyuk.blog.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.validation.Valid;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,20 +35,20 @@ public class ReplyController {
 	@PostMapping("/reply")
 	public CommonRespDto<?> save(@Valid @RequestBody ReplySaveReqDto replySaveReqDto, @AuthenticationPrincipal PrincipalDetails principalDetails, 
 									BindingResult bindingResult) {
+		
+		if (bindingResult.hasErrors()) {
+			String message = "";
+			for (FieldError error : bindingResult.getFieldErrors()) {
+				System.out.println(error.getField() + " : " + error.getDefaultMessage());
+				message = message + error.getDefaultMessage() + "\n";
+			}
+			return new CommonRespDto<>(-1, message);
+		}
+		
 		User userEntity = principalDetails.getUser();
 		Reply reply = replySaveReqDto.toEntity();
 		reply.setUser(userEntity);
 		replyService.댓글쓰기(reply, replySaveReqDto.getPostId());
-		
-		if (bindingResult.hasErrors()) {
-			Map<String, String> errors = new HashMap<>();
-			
-			for (FieldError error : bindingResult.getFieldErrors()) {
-				errors.put(error.getField(), error.getDefaultMessage());
-			}
-			
-			return new CommonRespDto<>(-1, errors);
-		}
 		
 		return new CommonRespDto<>(1, null);
 	}

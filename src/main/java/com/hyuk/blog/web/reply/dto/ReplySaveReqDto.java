@@ -1,6 +1,6 @@
 package com.hyuk.blog.web.reply.dto;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 import com.hyuk.blog.domain.reply.Reply;
 
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReplySaveReqDto {
-	@NotBlank(message = "내용을 입력하세요.")
+	@NotEmpty(message = "내용을 입력하세요.")
 	private String content;
 	
 	private int postId;

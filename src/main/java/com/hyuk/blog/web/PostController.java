@@ -61,19 +61,16 @@ public class PostController {
 	@PostMapping("/post")
 	public String save(@Valid PostSaveReqDto postSaveReqDto, @AuthenticationPrincipal PrincipalDetails principalDetails, 
 							BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			for (FieldError error : bindingResult.getFieldErrors()) {
+				System.out.println(error.getField() + " : " + error.getDefaultMessage());
+			}
+			return "redirect:/post/saveForm";
+		}
+		
 		Post post = postSaveReqDto.toEntity();
 		post.setUser(principalDetails.getUser());
 		Post postEntity = postService.글쓰기(post);
-		
-		if (bindingResult.hasErrors()) {
-			Map<String, String> errors = new HashMap<>();
-			
-			for (FieldError error : bindingResult.getFieldErrors()) {
-				errors.put(error.getField(), error.getDefaultMessage());
-			}
-			
-			return "post/saveForm";
-		}
 		
 		if (postEntity == null) {
 			return "post/saveForm";
@@ -97,7 +94,17 @@ public class PostController {
 	}
 	
 	@PutMapping("/post/{id}")
-	public @ResponseBody CommonRespDto<?> update(@PathVariable int id, @RequestBody PostUpdateReqDto postUpdateReqDto) {
+	public @ResponseBody CommonRespDto<?> update(@PathVariable int id, @Valid @RequestBody PostUpdateReqDto postUpdateReqDto, 
+													BindingResult bindingResult) {
+		String message = "";
+		if (bindingResult.hasErrors()) {
+			for (FieldError error : bindingResult.getFieldErrors()) {
+				System.out.println(error.getField() + " : " + error.getDefaultMessage());
+				message = message + error.getDefaultMessage() + "\n";
+			}
+			return new CommonRespDto<>(-1, message);
+		}
+		
 		postService.수정하기(id, postUpdateReqDto);
 		return new CommonRespDto<>(1, null);
 	}

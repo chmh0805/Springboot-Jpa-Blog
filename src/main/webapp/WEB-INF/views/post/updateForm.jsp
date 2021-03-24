@@ -45,7 +45,7 @@
 				alert("수정 완료");
 				location.href = "/post/" + id;
 			} else {
-				alert("수정 실패");
+				alert(res.data);
 			}
 		});
 	});

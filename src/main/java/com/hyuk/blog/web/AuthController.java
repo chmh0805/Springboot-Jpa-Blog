@@ -1,6 +1,10 @@
 package com.hyuk.blog.web;
 
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -27,7 +31,16 @@ public class AuthController {
 	}
 	
 	@PostMapping("/join")
-	public String join(AuthJoinReqDto authJoinReqDto) {
+	public String join(@Valid AuthJoinReqDto authJoinReqDto, BindingResult bindingResult) {
+		
+		if (bindingResult.hasErrors()) {
+			for (FieldError error : bindingResult.getFieldErrors()) {
+				System.out.println(error.getField() + " : " + error.getDefaultMessage());
+			}
+			
+			return "redirect:/joinForm";
+		}
+		
 		authService.회원가입(authJoinReqDto.toEntity());
 		return "redirect:/loginForm"; // loginForm() 함수 재활용 문법
 	}

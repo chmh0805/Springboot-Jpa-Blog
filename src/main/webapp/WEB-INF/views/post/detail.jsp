@@ -117,7 +117,7 @@
 				alert("댓글 등록 완료");
 				location.reload();
 			} else {
-				alert("댓글 등록 실패");
+				alert(res.data);
 			}
 		});
 	}
