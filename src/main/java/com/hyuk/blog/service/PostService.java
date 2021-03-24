@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hyuk.blog.domain.post.Post;
 import com.hyuk.blog.domain.post.PostRepository;
+import com.hyuk.blog.exception.myexception.NotExistException;
 import com.hyuk.blog.web.post.dto.PostUpdateReqDto;
 
 import lombok.RequiredArgsConstructor;
@@ -34,12 +35,12 @@ public class PostService {
 	
 	@Transactional(readOnly = true)
 	public Post 상세보기(int id) {
-		return postRepository.findById(id).get();
+		return postRepository.findById(id).orElseThrow(() -> {throw new NotExistException("존재하지 않는 글입니다.");});
 	}
 	
 	@Transactional
 	public void 수정하기(int id, PostUpdateReqDto postUpdateReqDto) {
-		Post postEntity = postRepository.findById(id).get();
+		Post postEntity = postRepository.findById(id).orElseThrow(() -> {throw new NotExistException("존재하지 않는 글입니다.");});
 		
 		postEntity.setTitle(postUpdateReqDto.getTitle());
 		postEntity.setContent(postUpdateReqDto.getContent());

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hyuk.blog.domain.user.User;
 import com.hyuk.blog.domain.user.UserRepository;
+import com.hyuk.blog.exception.myexception.NotExistException;
 import com.hyuk.blog.web.user.dto.UserUpdateReqDto;
 
 import lombok.RequiredArgsConstructor;
@@ -16,10 +17,10 @@ public class UserService {
 	
 	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
-	
+
 	@Transactional
 	public User 회원정보수정(Integer id, UserUpdateReqDto userUpdateReqDto) {
-		User userEntity = userRepository.findById(id).get();
+		User userEntity = userRepository.findById(id).orElseThrow(() -> {throw new NotExistException("존재하지 않는 사용자입니다.");});
 		if (userUpdateReqDto.getPassword() != null && !(userUpdateReqDto.getPassword().equals(""))) {
 			String rawPassword = userUpdateReqDto.getPassword();
 			String encPassword = bCryptPasswordEncoder.encode(rawPassword);
